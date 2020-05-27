@@ -1,0 +1,1 @@
+jegp_add_test(quantity_wrappers COMPILE_ONLY)

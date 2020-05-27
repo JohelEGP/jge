@@ -1,0 +1,32 @@
+language: cpp
+os: linux
+dist: bionic
+
+env:
+  global:
+  - PATH=/tmp/bin:$PATH
+  - CXXFLAGS="-Wpedantic -Wall -Wextra"
+  - JGE_OPTIONS=-DJGE_TEST=ON
+
+jobs:
+  include:
+  - compiler: g++-10
+    addons:
+      apt:
+        sources:
+        - sourceline: 'ppa:ubuntu-toolchain-r/test'
+        packages:
+        - g++-10
+
+before_script:
+- CXX=$TRAVIS_COMPILER
+- tools/travis/install_cmake.sh 3.15.4
+
+script:
+- cmake -E make_directory build
+- cmake -E chdir build cmake .. $JGE_OPTIONS
+- cmake --build build -j 2
+- cmake -E chdir build ctest --output-on-failure
+
+notifications:
+  email: false
